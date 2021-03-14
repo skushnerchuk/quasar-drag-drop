@@ -28,7 +28,7 @@
         </div>
       </q-card-section>
       <q-card-actions align="center">
-        <q-btn color="primary" label="Сброс" unelevated @click="files = []"/>
+        <q-btn color="primary" label="Reset" unelevated @click="files = []"/>
       </q-card-actions>
     </q-card>
   </div>
