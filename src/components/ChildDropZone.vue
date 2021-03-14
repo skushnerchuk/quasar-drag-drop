@@ -1,34 +1,34 @@
 <template>
   <div
     class="dropzone child-dropzone flex flex-center shadow-20"
+    style="width: 300px; height: 300px; position: relative"
     @dragenter="dragEnter"
     @dragleave="dragLeave"
     @dragover="dragOver"
     @drop="drop"
-    style="width: 300px; height: 300px; position: relative"
   >
     <div
-      class="z-top flex dropzone-overlay text-white"
       v-if="enterCount !== 0"
+      class="z-top flex dropzone-overlay text-white"
     >
       <div>
         <div class="text-h5 text-bold q-pt-lg text-center">
           Загрузка файлов
         </div>
         <div class="text-caption q-pa-lg text-center">
-          Поддерживаются форматы PDF, XLS, XLSX, DOC, DOCX
+          Поддерживаются форматы XLS, XLSX
         </div>
       </div>
     </div>
 
-    <q-card bordered flat class="flex column flex-center">
+    <q-card bordered class="flex column flex-center" flat>
       <q-card-section>
         <div>
-          Загружено: {{ count }}
+          Загружено: {{ files.length }}
         </div>
       </q-card-section>
       <q-card-actions align="center">
-        <q-btn unelevated color="primary" label="Сброс" @click="count = 0"/>
+        <q-btn color="primary" label="Сброс" unelevated @click="files = []"/>
       </q-card-actions>
     </q-card>
   </div>
@@ -41,14 +41,25 @@ export default {
   data () {
     return {
       enterCount: 0,
-      count: 0
+      files: [],
+      allowedExt: /(\.xls|\.xlsx)$/i,
+      maxSize: 3 * 1024 * 1024, // 3 Mb
+      maxFiles: 1
     }
   },
 
   methods: {
     drop (event) {
       event.preventDefault()
-      this.count++
+      const files = event.dataTransfer.files
+      if (!files || files.length > this.maxFiles) {
+        return
+      }
+      for (const item of files) {
+        if (!this.isFileExist(item) && this.isSupportedFile(item)) {
+          this.files.push(item)
+        }
+      }
       this.enterCount = 0
     },
 
@@ -63,6 +74,29 @@ export default {
     },
 
     dragOver (event) {
+    },
+
+    isSupportedFile (fileObj) {
+      return this.isSupportedType(fileObj) && this.isSupportedSize(fileObj)
+    },
+
+    isFileExist (fileObj) {
+      for (const item of this.files) {
+        if (item.name === fileObj.name &&
+          item.size === fileObj.size &&
+          item.lastModifiedDate.toString() === fileObj.lastModifiedDate.toString()
+        ) {
+          return true
+        }
+      }
+    },
+
+    isSupportedType (fileObj) {
+      return this.allowedExt.exec(fileObj.name);
+    },
+
+    isSupportedSize (fileObj) {
+      return fileObj <= this.maxSize
     }
   }
 }
