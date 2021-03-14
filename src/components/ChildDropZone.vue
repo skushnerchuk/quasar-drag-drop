@@ -13,10 +13,10 @@
     >
       <div>
         <div class="text-h5 text-bold q-pt-lg text-center">
-          Загрузка файлов
+          File upload
         </div>
         <div class="text-caption q-pa-lg text-center">
-          Поддерживаются форматы XLS, XLSX
+          Supported only:  XLS, XLSX
         </div>
       </div>
     </div>
@@ -24,7 +24,7 @@
     <q-card bordered class="flex column flex-center" flat>
       <q-card-section>
         <div>
-          Загружено: {{ files.length }}
+          Uploaded: {{ files.length }}
         </div>
       </q-card-section>
       <q-card-actions align="center">
@@ -52,7 +52,7 @@ export default {
     drop (event) {
       event.preventDefault()
       const files = event.dataTransfer.files
-      if (!files || files.length > this.maxFiles) {
+      if (!files || this.files.length + files.length > this.maxFiles) {
         return
       }
       for (const item of files) {
