@@ -51,6 +51,7 @@ export default {
   methods: {
     drop (event) {
       event.preventDefault()
+      this.enterCount = 0
       const files = event.dataTransfer.files
       if (!files || this.files.length + files.length > this.maxFiles) {
         return
@@ -60,7 +61,6 @@ export default {
           this.files.push(item)
         }
       }
-      this.enterCount = 0
     },
 
     dragEnter (event) {
@@ -74,6 +74,7 @@ export default {
     },
 
     dragOver (event) {
+      event.preventDefault()
     },
 
     isSupportedFile (fileObj) {
@@ -96,7 +97,7 @@ export default {
     },
 
     isSupportedSize (fileObj) {
-      return fileObj <= this.maxSize
+      return fileObj.size <= this.maxSize
     }
   }
 }
